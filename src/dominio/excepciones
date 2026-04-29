@@ -1,0 +1,13 @@
+export class HotelNoEncontrado extends Error {
+    constructor(id: string) {
+        super(`El hotel con ID ${id} no fue localizado.`);
+        this.name = "HotelNoEncontrado";
+    }
+}
+
+export class FechasInvalidas extends Error {
+    constructor() {
+        super("La fecha de salida debe ser posterior a la fecha de ingreso.");
+        this.name = "FechasInvalidas";
+    }
+}
