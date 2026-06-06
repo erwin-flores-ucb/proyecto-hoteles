@@ -20,5 +20,4 @@ export class MemoryHotelRepositoryImpl implements IHotelRepository {
             throw new DatabaseNotFoundException('Hotel no encontrado')
         return hotel;  
     }
-
 }

@@ -1,15 +1,13 @@
 import express from 'express';
 import { CrearHotelUseCase } from '../../aplicacion/casosDeUso/crearHotel.use-case';
-import { MemoryHotelRepositoryImpl } from '../persistance/hotel.repository.impl';
 import { ObtenerHotelUseCase } from '../../aplicacion/casosDeUso/obtenerHotel.use-case';
 import { agregarHabitacionSimpleUseCase } from '../../aplicacion/casosDeUso/agregarHabitacionSimple.use-case';
 import { ExceptionHandler, IHttpResponse } from '../middlewares/ExceptionHandler';
 import { Hotel } from '../../dominio/Hotel';
 import { IdParamvalidator } from '../validations/id-param.validator';
+import { IHotelRepository } from '../../aplicacion/ports/IHotelRepository';
 
-const memoriHotelRepository = new MemoryHotelRepositoryImpl();
-
-export function initializeController(app: express.Express) {
+export function initializeController(app: express.Express, memoriHotelRepository: IHotelRepository) {
     /**
      * @swagger
      * /hotel:
@@ -58,7 +56,7 @@ export function initializeController(app: express.Express) {
     app.post('/hotel', (req: express.Request, res: express.Response) => {
         const respHotel = new CrearHotelUseCase(memoriHotelRepository).execute(req.body)
 
-        console.log('Estado de los Hoteles:', memoriHotelRepository.hoteles)
+        // console.log('Estado de los Hoteles:', memoriHotelRepository.hoteles)
 
         res.status(200).json(respHotel);
     })

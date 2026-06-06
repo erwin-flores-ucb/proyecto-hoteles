@@ -1,5 +1,3 @@
-import { Hotel } from "../../dominio/Hotel";
-import { CrearHotelDto } from "../dtos/crearHotel.dto";
 import { IHotelRepository } from "../ports/IHotelRepository";
 
 export class ObtenerHotelUseCase {

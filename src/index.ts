@@ -1,64 +1,79 @@
-import express, { NextFunction, Request, Response } from 'express'
+import express from 'express'
 import { initializeController } from './infraestructura/controllers'
-import { ExceptionHandler, IHttpResponse } from './infraestructura/middlewares/ExceptionHandler'
 import methodOverride from 'method-override'
+import { MemoryHotelRepositoryImpl } from './infraestructura/persistance/hotel.repository.impl';
+import { IHotelRepository } from './aplicacion/ports/IHotelRepository';
 import swaggerUi from 'swagger-ui-express'
 import { swaggerSpec } from './infraestructura/swagger/swagger.config'
 
-const app = express()
+const memoriHotelRepository = new MemoryHotelRepositoryImpl();
+// PosgresDbHotelRepositoryImpl
 
-// Captura de la excepcion
+export function createApp(repository: IHotelRepository) {
+  const app = express()
+
+  // Captura de la excepcion
 
 
 
-app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+  app.use(express.json()) // for parsing application/json
+  app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
-app.use(methodOverride())
+  app.use(methodOverride())
 
-// Swagger UI
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { 
-  swaggerOptions: {
-    persistAuthorization: true,
-  }
-}))
+  /*
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.log('En error <---------------------');
+    const respError = ExceptionHandler.handle(err as Error);
+    return res.status(respError.status).json({
+          message: respError.message,
+          error: respError.error,
+        });
+  });
+  */
 
-/*
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.log('En error <---------------------');
-  const respError = ExceptionHandler.handle(err as Error);
-  return res.status(respError.status).json({
-        message: respError.message,
-        error: respError.error,
-      });
-});
-*/
+  // Swagger UI
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { 
+    swaggerOptions: {
+      persistAuthorization: true,
+    }
+  }))
 
-// capturar excepciones
+  // Descargar especificación OpenAPI en JSON
+  app.get('/api-docs.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json')
+    res.setHeader('Content-Disposition', 'attachment; filename="api-docs.json"')
+    res.send(swaggerSpec)
+  })
 
-// Descargar especificación OpenAPI en JSON
-app.get('/api-docs.json', (req, res) => {
-  res.setHeader('Content-Type', 'application/json')
-  res.setHeader('Content-Disposition', 'attachment; filename="api-docs.json"')
-  res.send(swaggerSpec)
-})
+  // capturar excepciones
 
-app.get('/', (req, res) => {
-  res.send('Hello World')
-})
+  app.get('/', (req, res) => {
+    res.send('Hello World')
+  })
 
-initializeController(app);
+  app.post('/test-form', (req, res) => {
+    console.log('body del request:', req.body)
+    res.send('Hello World')
+  })
 
-// GET - optener datos
-// POST - mandar datos
+  initializeController(app, repository);
 
-// PUT - crea o actualiza
-// PATCH - actualiza
+  // GET - optener datos
+  // POST - mandar datos
 
-// DELETE - eliminar
+  // PUT - crea o actualiza
+  // PATCH - actualiza
 
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000')
-  console.log('Swagger API Documentation available at http://localhost:3000/api-docs')
-  console.log('Download API spec JSON at http://localhost:3000/api-docs.json')
-})
+  // DELETE - eliminar
+
+  app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000')
+    console.log('Swagger API Documentation available at http://localhost:3000/api-docs')
+    console.log('Download API spec JSON at http://localhost:3000/api-docs.json')
+  })
+
+  return app;
+}
+
+createApp(memoriHotelRepository)
