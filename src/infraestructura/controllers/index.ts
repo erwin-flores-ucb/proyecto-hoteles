@@ -6,6 +6,7 @@ import { ExceptionHandler, IHttpResponse } from '../middlewares/ExceptionHandler
 import { Hotel } from '../../dominio/Hotel';
 import { IdParamvalidator } from '../validations/id-param.validator';
 import { IHotelRepository } from '../../aplicacion/ports/IHotelRepository';
+import { renderHotelListTemplate } from '../templates/hoteles-list.template';
 
 export function initializeController(app: express.Express, memoriHotelRepository: IHotelRepository) {
     /**
@@ -59,6 +60,27 @@ export function initializeController(app: express.Express, memoriHotelRepository
         // console.log('Estado de los Hoteles:', memoriHotelRepository.hoteles)
 
         res.status(200).json(respHotel);
+    })
+
+    app.get('/hotel', (req: express.Request, res: express.Response) => {
+
+        // console.log('Estado de los Hoteles:', memoriHotelRepository.hoteles)
+
+        res.send(renderHotelListTemplate(memoriHotelRepository.listHoteles()));
+    })
+
+    app.get('/hotel/list', (req: express.Request, res: express.Response) => {
+
+        // console.log('Estado de los Hoteles:', memoriHotelRepository.hoteles)
+
+        res.json({
+            data: memoriHotelRepository.listHoteles().map((hotel) => ({
+        id: hotel.getId(),
+        nombre: hotel.nombre,
+        direccion: hotel.getDireccion(),
+        estrellas: hotel.getEstrellas()
+    }))
+        }).status(200);
     })
     
     /**

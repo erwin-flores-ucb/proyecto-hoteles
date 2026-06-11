@@ -5,6 +5,7 @@ import { MemoryHotelRepositoryImpl } from './infraestructura/persistance/hotel.r
 import { IHotelRepository } from './aplicacion/ports/IHotelRepository';
 import swaggerUi from 'swagger-ui-express'
 import { swaggerSpec } from './infraestructura/swagger/swagger.config'
+import cors from 'cors';
 
 const memoriHotelRepository = new MemoryHotelRepositoryImpl();
 // PosgresDbHotelRepositoryImpl
@@ -12,13 +13,19 @@ const memoriHotelRepository = new MemoryHotelRepositoryImpl();
 export function createApp(repository: IHotelRepository) {
   const app = express()
 
+  app.use(cors({
+    origin: '*', // Dominio autorizado
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Métodos HTTP permitidos
+    allowedHeaders: ['Content-Type', 'Authorization'], // Cabeceras permitidas
+    optionsSuccessStatus: 200 // Compatibilidad con navegadores antiguos
+  }))
+
   // Captura de la excepcion
 
 
 
   app.use(express.json()) // for parsing application/json
   app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-
   app.use(methodOverride())
 
   /*
