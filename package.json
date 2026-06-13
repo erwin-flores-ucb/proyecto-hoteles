@@ -10,7 +10,8 @@
   "type": "commonjs",
   "main": "/dist/index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --config=jest.config.json",
+    "test:coverage": "jest --config=jest.config.json --coverage",
     "dev": "tsx ./src/index.ts"
   },
   "dependencies": {
@@ -23,7 +24,6 @@
     "handlebars": "^4.7.9",
     "jest": "^30.4.2",
     "method-override": "^3.0.0",
-    "supertest": "^7.2.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "ts-jest": "^29.4.11",
@@ -32,6 +32,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/supertest": "^7.2.0",
+    "supertest": "^7.2.2",
     "typescript": "^6.0.3"
   }
 }
