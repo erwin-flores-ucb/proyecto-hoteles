@@ -215,6 +215,21 @@ export function initializeController(app: express.Express, memoriHotelRepository
         }
     });
 
+    app.post('/hotel/:id/habitacion-doble', (req: express.Request, res: express.Response) => {
+        const params = req.params as { id: string };
+        const body = req.body as { numeroHabitacion: number; precio: number };
+        let respError: IHttpResponse | undefined = undefined;
+        try {
+            IdParamvalidator.validate(params.id);
+            const hotel = new ObtenerHotelUseCase(memoriHotelRepository).execute(params.id);
+            const { agregarHabitacionDobleUseCase } = require('../../aplicacion/casosDeUso/agregarHabitacionDoble.use-case');
+            new agregarHabitacionDobleUseCase().execute(hotel, body);
+            res.status(200).json({ mensaje: 'Habitacion doble agregada exitosamente' });
+        } catch (err) {
+            respError = ExceptionHandler.handle(err as Error);
+            return res.status(respError.status).json({ message: respError.message, error: respError.error });
+        }
+    });
     // POST /hotel/{id}/habitacion-doble
 
 
