@@ -27,6 +27,10 @@ export class Hotel {
     return this.estrellas;
   }
 
+  public getHabitaciones() {
+    return this.habitaciones
+  }
+
   public get nombre(): string {
     return this._nombre;
   }
