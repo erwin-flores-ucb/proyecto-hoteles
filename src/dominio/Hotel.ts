@@ -19,6 +19,18 @@ export class Hotel {
     return this.id;
   }
 
+  public getDireccion() {
+    return this.direccion;
+  }
+
+  public getEstrellas() {
+    return this.estrellas;
+  }
+
+  public getHabitaciones() {
+    return this.habitaciones
+  }
+
   public get nombre(): string {
     return this._nombre;
   }
