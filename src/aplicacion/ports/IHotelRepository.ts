@@ -1,7 +1,7 @@
 import { Hotel } from "../../dominio/Hotel"
 
 export interface IHotelRepository {
-    crearHotel(hotel: Hotel): Hotel
-    obtenerHotel(id: string): Hotel
-    listHoteles(): Hotel[]
+    crearHotel(hotel: Hotel): Promise<Hotel>
+    obtenerHotel(id: string): Promise<Hotel>
+    listHoteles(): Promise<Hotel[]>
 }

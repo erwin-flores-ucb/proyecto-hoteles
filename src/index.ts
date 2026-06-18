@@ -6,8 +6,16 @@ import { IHotelRepository } from './aplicacion/ports/IHotelRepository';
 import swaggerUi from 'swagger-ui-express'
 import { swaggerSpec } from './infraestructura/swagger/swagger.config'
 import cors from 'cors';
+import { PgHotelRepositoryImpl } from './infraestructura/persistance/hotel.repository.pg.impl';
 
 const memoriHotelRepository = new MemoryHotelRepositoryImpl();
+const pgHotelRepository = new PgHotelRepositoryImpl({
+  user: 'alumno',
+  password: '123456',
+  host: '127.0.0.1',
+  port: 5432,
+  database: 'db-hoteles'
+});
 // PosgresDbHotelRepositoryImpl
 
 export function createApp(repository: IHotelRepository) {
@@ -83,4 +91,4 @@ export function createApp(repository: IHotelRepository) {
   return app;
 }
 
-createApp(memoriHotelRepository)
+createApp(pgHotelRepository)

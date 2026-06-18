@@ -14,7 +14,7 @@ import { HabitacionesMapper } from "../mappers/habitaciones.mapper";
 
 export function initializeController(
   app: express.Express,
-  memoriHotelRepository: IHotelRepository,
+  hotelRepository: IHotelRepository,
 ) {
   /**
    * @swagger
@@ -61,28 +61,28 @@ export function initializeController(
    *             schema:
    *               $ref: '#/components/schemas/Error'
    */
-  app.post("/hotel", (req: express.Request, res: express.Response) => {
-    const respHotel = new CrearHotelUseCase(memoriHotelRepository).execute(
+  app.post("/hotel", async (req: express.Request, res: express.Response) => {
+    const respHotel = await (new CrearHotelUseCase(hotelRepository).execute(
       req.body,
-    );
+    ));
 
     // console.log('Estado de los Hoteles:', memoriHotelRepository.hoteles)
 
     res.status(200).json(respHotel);
   });
 
-  app.get("/hotel", (req: express.Request, res: express.Response) => {
+  app.get("/hotel", async (req: express.Request, res: express.Response) => {
     // console.log('Estado de los Hoteles:', memoriHotelRepository.hoteles)
 
-    res.send(renderHotelListTemplate(memoriHotelRepository.listHoteles()));
+    res.send(renderHotelListTemplate(await hotelRepository.listHoteles()));
   });
 
-  app.get("/hotel/list", (req: express.Request, res: express.Response) => {
+  app.get("/hotel/list", async (req: express.Request, res: express.Response) => {
     // console.log('Estado de los Hoteles:', memoriHotelRepository.hoteles)
 
     res
       .json({
-        data: memoriHotelRepository.listHoteles().map((hotel) => ({
+        data: (await hotelRepository.listHoteles()).map((hotel) => ({
           id: hotel.getId(),
           nombre: hotel.nombre,
           direccion: hotel.getDireccion(),
@@ -130,16 +130,16 @@ export function initializeController(
    *               $ref: '#/components/schemas/Error'
    */
   // GET /hotel/{id}
-  app.get("/hotel/:id", (req: express.Request, res: express.Response, next) => {
+  app.get("/hotel/:id", async (req: express.Request, res: express.Response, next) => {
     const params = req.params as { id: string };
     let respError: IHttpResponse | undefined = undefined;
     let hotelData: Hotel | undefined = undefined;
     try {
       // validacion
       IdParamvalidator.validate(params.id);
-      hotelData = new ObtenerHotelUseCase(memoriHotelRepository).execute(
+      hotelData = (await new ObtenerHotelUseCase(hotelRepository).execute(
         params.id,
-      );
+      ));
     } catch (err) {
       respError = ExceptionHandler.handle(err as Error);
     } finally {
@@ -203,7 +203,7 @@ export function initializeController(
    */
   app.post(
     "/hotel/:id/habitacion-simple",
-    (req: express.Request, res: express.Response) => {
+    async (req: express.Request, res: express.Response) => {
       const params = req.params as { id: string };
       const body = req.body as { numeroHabitacion: number; precio: number };
       let respError: IHttpResponse | undefined = undefined;
@@ -213,7 +213,7 @@ export function initializeController(
         IdParamvalidator.validate(params.id);
 
         // Obtener el hotel
-        const hotel = new ObtenerHotelUseCase(memoriHotelRepository).execute(
+        const hotel = await new ObtenerHotelUseCase(hotelRepository).execute(
           params.id,
         );
 

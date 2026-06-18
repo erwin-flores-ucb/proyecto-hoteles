@@ -9,19 +9,19 @@ export class MemoryHotelRepositoryImpl implements IHotelRepository {
         this.hoteles = [];
     }
 
-    crearHotel(hotel: Hotel): Hotel {
+    crearHotel(hotel: Hotel): Promise<Hotel> {
         this.hoteles.push(hotel);
-        return hotel;
+        return Promise.resolve(hotel);
     }
 
-    obtenerHotel(id: string): Hotel {
+    obtenerHotel(id: string): Promise<Hotel> {
         const hotel = this.hoteles.find(el => el.getId() === id );
         if(hotel === undefined)
             throw new DatabaseNotFoundException('Hotel no encontrado')
-        return hotel;  
+        return Promise.resolve(hotel);  
     }
 
-    listHoteles(): Hotel[] {
-        return this.hoteles
+    listHoteles(): Promise<Hotel[]> {
+        return Promise.resolve(this.hoteles)
     }
 }
